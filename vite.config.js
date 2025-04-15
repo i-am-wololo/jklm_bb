@@ -11,7 +11,7 @@ export default  {
 				name,
 				version,
 				match: [
-					"https://jklm.fun/*"
+					"https://*.jklm.fun/games/bombparty*"
 				],
 			},
 
