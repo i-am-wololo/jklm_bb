@@ -1,14 +1,30 @@
 import {syllable_change} from "./callbacks.ts"
+import {Bot} from "./bombparty.ts"
+import van from "vanjs-core"
+import {config} from "./config.ts"
+
+// userscript initialization
+const {button} = van.tags
+
+const injected: HTMLElement = $(".summary")
+
+const bot = new Bot();
+const botstate = van.state(false)
+
+van.add(injected, 
+				() => button({onclick: () => document.getElementById("configDialog").showModal()},
+										 "config"),
+				() => button(
+					{onclick: () => botstate.val = bot.toggleObserver()},
+					(botstate.val) ? "on" : "off"
+				)
+);
+
+van.add(document.body, config())
+
+	
 
 
-console.log("initialization");
-const syllableNode: HTMLEvent = $(".middle .round .syllable");
-const syllableObserver: Obserevr = new MutationObserver(syllable_change);
-
-syllableObserver.observe(syllableNode, {childList: true});
-console.log("syllable observer attached");
 
 
-
-
-
+export const test = "hello";
