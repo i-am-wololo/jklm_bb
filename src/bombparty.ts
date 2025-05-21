@@ -26,7 +26,6 @@ export class Bot {
 				const syllable: String = milestone.syllable;
 				type_word.bind(this, this.dict, syllable, this.speed, this.history)();
 			};
-			console.log(this.history);
 			this.history = this.history.concat(history_builder());
 		});
 		console.log("bot initialized");
@@ -34,15 +33,13 @@ export class Bot {
 
 
 	
-	toggleObserver(): void {
+	toggleObserver(): bool {
 		if (this.observerState) {
 			this.syllableObserver.disconnect();
 			this.observerState = false;
-			console.log("is off")
 		} else {
 			this.syllableObserver.observe($(".middle .round .syllable"), {childList: true});
 			this.observerState = true;
-			console.log("is on")
 		};
 		return this.observerState
 	};

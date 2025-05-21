@@ -5,26 +5,33 @@ import {config} from "./config.ts"
 
 // userscript initialization
 const {button} = van.tags
+const debug: bool = true
 
 const injected: HTMLElement = $(".summary")
 
-const bot = new Bot();
+// initialise bot avec config sauvegardé ou config de base
+const bot = new Bot(GM_getValue("config", undefined)); 
+console.log(bot)
+
 const botstate = van.state(false)
 
 van.add(injected, 
-				() => button({onclick: () => document.getElementById("configDialog").showModal()},
-										 "config"),
+				() => button(
+					{onclick: () => document.getElementById("configDialog").showModal()},
+					"config"
+				),
 				() => button(
 					{onclick: () => botstate.val = bot.toggleObserver()},
 					(botstate.val) ? "on" : "off"
 				)
 );
 
-van.add(document.body, config())
+van.add(document.body, config(bot))
 
-	
-
-
-
-
-export const test = "hello";
+if (debug) {
+	van.add(injected, 
+		() => button(
+				{onclick: () => console.log(bot)}, "Print config"
+		),
+	)
+}
