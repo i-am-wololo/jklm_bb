@@ -16,9 +16,8 @@ export function regexp_builder(chars: string, excludedletters: string[]): RegExp
 
 // prend en paramètre un dictionnaire (tableau de chaînes) et une règle, et retourne le premier mot qui est approuvé par la règle
 export function find_word(dict: string[], pattern: RegExp, used_words: string[], random: bool = false): String {
-	let i = (random == true) ? Math.floor(Math.random() * ((dict.length/4) *2)): 0
 	let found = false;
-	console.log(used_words)
+	let i: number = 0;
 	while (i <= dict.length && found == false) {
 		found = pattern.test(dict[i]) && !used_words.includes(dict[i]);
 		i++
@@ -31,10 +30,11 @@ export function find_word(dict: string[], pattern: RegExp, used_words: string[],
  * puis quand un mot est envoyé, socket.emit("setWord", word, true) est appelé.
  * speed est en milisecondes
  */
-export function type_word(dict: String[], syllable: String, speed: number, history: string[]) {
+export function type_word(dict: String[], syllable: String, speed: number, history: string[], wait: number = 0) {
 	const pattern: RegExp = regexp_builder(syllable);
-	const word: String = find_word(dict, pattern, history, false);
+	const word: String = find_word(dict, pattern, history);
 	let i: number = 0;
+	setTimeout(() => {
 	let typing = setInterval(() => {
 		i++
 		socket.emit("setWord", word.slice(0, i+1) ,false)
@@ -42,7 +42,7 @@ export function type_word(dict: String[], syllable: String, speed: number, histo
 			socket.emit("setWord", word, true);
 			clearInterval(typing);
 		};
-	}, speed);
+	}, speed)}, 1100);
 };
 
 export function history_builder() {
@@ -56,3 +56,13 @@ export function history_builder() {
 }
 
 
+
+export function shuffle_dict(dict: String[]): String[] {
+	for (let i = dict.length-1; i>=1; i--) {
+		const randindex: number = Math.floor(Math.random()*(i+1));
+		[dict[i], dict[randindex]] = [dict[randindex], dict[i]]
+	}
+	return dict
+};
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
